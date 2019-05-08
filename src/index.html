@@ -15,10 +15,10 @@
     <section class="flex-none pa3 bg-white">
       <input type="file" id="file" style="visibility:hidden" class="input avenir" />
       <select id="chunker">
+        <option value="size-32">32 byte chunks</option>
         <option value="size-512" selected>512 byte chunks</option>
         <option value="size-1024">1,024 byte chunks</option>
         <option value="size-16384">16,384 byte chunks</option>
-        <option value="size-262144">26,2144 byte chunks</option>
         <option value="size-262144">26,2144 byte chunks</option>
       </select>
       <select id="strategy">
@@ -34,7 +34,7 @@
       <select id="layer-repeat" style="visibility:hidden">
         <option value="1">1 layer repeat</option>
         <option value="4" selected>4 layer repeats</option>
-        <option value="16">4 layer repeats</option>
+        <option value="16">16 layer repeats</option>
       </select>
     </section>
     <div class="flex-auto" id="root" style="background: pink;"></div>

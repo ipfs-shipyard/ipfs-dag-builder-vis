@@ -57,109 +57,121 @@ const graphOpts = {
 const ipfs = new Ipfs()
 const { Buffer } = Ipfs
 
-const cy = cytoscape({
-  elements: [],
-  container: document.getElementById('root'),
-  ...graphOpts
-})
-
-const slowMap = async (items, fn, delay = 10) => {
-  const res = []
-  for (let i = 0; i < items.length; i++) {
-    res.push(await fn(items[i], i))
-    await new Promise(resolve => setTimeout(resolve, delay))
-  }
-  return res
-}
-
-const addToVis = async (cy, cid) => {
+const addToVis = async (cy, cid, seen = []) => {
   const { value: source } = await ipfs.dag.get(cid)
-  await slowMap(source.links, async (link) => {
-    const { value: target } = await ipfs.dag.get(link.cid)
-    let nodeData = {}
-    try {
-      // it's a unix system?
-      nodeData = unixfs.unmarshal(target.data)
-    } catch (err) {
-      // dag-pb but not a unixfs.
-      console.log(err)
-    }
-    console.log(`adding leaf ${link.cid} to parent ${cid}`, nodeData)
-    cy.add([{
+
+  let nodeData = {}
+
+  try {
+    // it's a unix system?
+    nodeData = unixfs.unmarshal(source.data)
+  } catch (err) {
+    // dag-pb but not a unixfs.
+    console.log(err)
+  }
+
+  for (let i = 0; i < source.links.length; i++) {
+    await addToVis(cy, source.links[i].cid)
+  }
+
+  if (!cy.getElementById(cid.toString()).length) {
+    cy.add({
       group: 'nodes',
       data: {
-        id: link.cid.toString(),
+        id: cid.toString(),
         ...nodeData
       },
-      classes: [
-        nodeData.blockSizes.length ? 'meta' : 'leaf'
-      ]
-    }, {
-      group: 'edges',
-      data: {
-        source: cid.toString(),
-        target: link.cid.toString()
-      }
-    }])
+      classes: source.links.length ? [] : ['leaf']
+    })
+  }
 
-    cy.layout(graphOpts.layout).run()
-
-    return addToVis(cy, link.cid)
-  })
+  cy.add(source.links.map(link => ({
+    group: 'edges',
+    data: {
+      source: cid.toString(),
+      target: link.cid.toString()
+    }
+  })))
 }
 
 const show = el => { el.style.visibility = 'visible' }
 const hide = el => { el.style.visibility = 'hidden' }
 
+const rootEl = document.getElementById('root')
 const fileEl = document.getElementById('file')
 const chunkerEl = document.getElementById('chunker')
 const strategyEl = document.getElementById('strategy')
 const maxChildrenEl = document.getElementById('max-children')
 const layerRepeatEl = document.getElementById('layer-repeat')
 
-strategyEl.addEventListener('change', e => {
-  if (['balanced', 'trickle'].includes(e.target.value)) {
+function updateAvailableOptions () {
+  if (['balanced', 'trickle'].includes(strategyEl.value)) {
     show(maxChildrenEl)
   } else {
     hide(maxChildrenEl)
   }
 
-  if (e.target.value === 'trickle') {
+  if (strategyEl.value === 'trickle') {
     show(layerRepeatEl)
   } else {
     hide(layerRepeatEl)
   }
-})
+}
+
+updateAvailableOptions()
+
+strategyEl.addEventListener('change', updateAvailableOptions)
 
 ipfs.on('ready', () => {
   console.log('IPFS is ready!')
 
   show(fileEl)
 
+  let vis
+  const rawFiles = []
+
+  ;[chunkerEl, strategyEl, maxChildrenEl, layerRepeatEl].forEach(el => {
+    el.addEventListener('change', addAndRender)
+  })
+
+  async function addAndRender () {
+    if (!rawFiles.length) return
+
+    if (vis) {
+      vis.container().parentNode.removeChild(vis.container())
+      vis = null
+    }
+
+    const files = rawFiles.map(({ path, content }) => ({ path, content }))
+    const res = await ipfs.add(files, {
+      chunker: chunkerEl.value,
+      strategy: strategyEl.value,
+      maxChildrenPerNode: parseInt(maxChildrenEl.value),
+      layerRepeat: parseInt(layerRepeatEl.value),
+      wrapWithDirectory: files.length > 1
+    })
+
+    console.log('added', res[res.length - 1].hash)
+
+    const container = document.createElement('div')
+    container.style.height = '100%'
+    rootEl.appendChild(container)
+
+    const cy = cytoscape({ elements: [], container, ...graphOpts })
+
+    await addToVis(cy, res[res.length - 1].hash)
+
+    cy.layout(graphOpts.layout).run()
+    vis = cy
+  }
+
   fileEl.addEventListener('change', e => {
     const file = e.target.files[0]
     const fileReader = new FileReader()
 
     fileReader.onload = async e => {
-      const path = file.name
-      const content = Buffer.from(e.target.result)
-      const res = await ipfs.add({ path, content }, {
-        chunker: chunkerEl.value,
-        strategy: strategyEl.value,
-        maxChildrenPerNode: parseInt(maxChildrenEl.value),
-        layerRepeat: parseInt(layerRepeatEl.value)
-      })
-
-      console.log('added', res[0].hash)
-
-      cy.add({
-        group: 'nodes',
-        data: {
-          id: res[0].hash
-        }
-      })
-
-      addToVis(cy, res[0].hash)
+      rawFiles.push({ path: file.name, content: Buffer.from(e.target.result) })
+      addAndRender()
     }
 
     fileReader.readAsArrayBuffer(file)
