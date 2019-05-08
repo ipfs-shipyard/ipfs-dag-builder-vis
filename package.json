@@ -1,0 +1,24 @@
+{
+  "name": "ipfs-add-file-vis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cytoscape": "^3.6.0",
+    "cytoscape-dagre": "^2.2.2",
+    "ipfs": "^0.35.0",
+    "ipfs-css": "^0.12.0",
+    "parcel": "^1.12.3",
+    "tachyons": "^4.11.1"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
+  },
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
