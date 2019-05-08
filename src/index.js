@@ -57,7 +57,9 @@ const graphOpts = {
 const ipfs = new Ipfs()
 const { Buffer } = Ipfs
 
-const addToVis = async (cy, cid, seen = []) => {
+const addToVis = async (cy, cid) => {
+  if (cy.getElementById(cid.toString()).length) return
+
   const { value: source } = await ipfs.dag.get(cid)
 
   let nodeData = {}
@@ -74,16 +76,14 @@ const addToVis = async (cy, cid, seen = []) => {
     await addToVis(cy, source.links[i].cid)
   }
 
-  if (!cy.getElementById(cid.toString()).length) {
-    cy.add({
-      group: 'nodes',
-      data: {
-        id: cid.toString(),
-        ...nodeData
-      },
-      classes: source.links.length ? [] : ['leaf']
-    })
-  }
+  cy.add({
+    group: 'nodes',
+    data: {
+      id: cid.toString(),
+      ...nodeData
+    },
+    classes: source.links.length ? [] : ['leaf']
+  })
 
   cy.add(source.links.map(link => ({
     group: 'edges',
