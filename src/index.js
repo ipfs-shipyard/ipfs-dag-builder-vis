@@ -57,8 +57,8 @@ const graphOpts = {
 const ipfs = new Ipfs()
 const { Buffer } = Ipfs
 
-const addToVis = async (cy, cid) => {
-  if (cy.getElementById(cid.toString()).length) return
+const getAllNodes = async (nodeMap, cid) => {
+  if (nodeMap.get(cid.toString())) return
 
   const { value: source } = await ipfs.dag.get(cid)
 
@@ -73,10 +73,10 @@ const addToVis = async (cy, cid) => {
   }
 
   for (let i = 0; i < source.links.length; i++) {
-    await addToVis(cy, source.links[i].cid)
+    await getAllNodes(nodeMap, source.links[i].cid)
   }
 
-  cy.add({
+  nodeMap.set(cid.toString(), {
     group: 'nodes',
     data: {
       id: cid.toString(),
@@ -85,13 +85,15 @@ const addToVis = async (cy, cid) => {
     classes: source.links.length ? [] : ['leaf']
   })
 
-  cy.add(source.links.map(link => ({
-    group: 'edges',
-    data: {
-      source: cid.toString(),
-      target: link.cid.toString()
-    }
-  })))
+  source.links.map(link => {
+    nodeMap.set(cid.toString() + '->' + link.cid.toString(), {
+      group: 'edges',
+      data: {
+        source: cid.toString(),
+        target: link.cid.toString()
+      }
+    })
+  })
 }
 
 const show = el => { el.style.visibility = 'visible' }
@@ -153,14 +155,17 @@ ipfs.on('ready', () => {
 
     console.log('added', res[res.length - 1].hash)
 
+    const nodeMap = new Map()
+    await getAllNodes(nodeMap, res[res.length - 1].hash)
+    renderVis(nodeMap)
+  }
+
+  function renderVis (nodeMap) {
     const container = document.createElement('div')
     container.style.height = '100%'
     rootEl.appendChild(container)
-
-    const cy = cytoscape({ elements: [], container, ...graphOpts })
-
-    await addToVis(cy, res[res.length - 1].hash)
-
+    const elements = Array.from(nodeMap.values())
+    const cy = cytoscape({ elements, container, ...graphOpts })
     cy.layout(graphOpts.layout).run()
     vis = cy
   }
