@@ -2,43 +2,11 @@
 <html lang="en" dir="ltr" class="h-100">
   <head>
     <meta charset="utf-8">
-    <title>Add files to IPFS</title>
+    <title>DAG builder visualization</title>
     <link rel="stylesheet" href="index.css">
   </head>
-  <body class="avenir flex flex-column h-100">
-    <header class="flex-none flex items-center pa3 bg-navy">
-      <a href="https://ipfs.io" title="home" class="w-50">
-        <img src="https://ipfs.io/images/ipfs-logo.svg" style="height: 50px" />
-      </a>
-      <h1 class="w-50 ma0 tr f3 fw2 montserrat aqua">DAG builder</h1>
-    </header>
-    <main></main>
-    <!--section class="flex-none pa3 bg-white">
-      <input type="file" id="file" style="visibility:hidden" class="input avenir" />
-      <select id="chunker">
-        <option value="size-32">32 byte chunks</option>
-        <option value="size-512" selected>512 byte chunks</option>
-        <option value="size-1024">1,024 byte chunks</option>
-        <option value="size-16384">16,384 byte chunks</option>
-        <option value="size-262144">26,2144 byte chunks</option>
-      </select>
-      <select id="strategy">
-        <option value="balanced" selected>Balanced DAG</option>
-        <option value="trickle">Trickle DAG</option>
-        <option value="flat">Flat DAG</option>
-      </select>
-      <select id="max-children">
-        <option value="11" selected>11 children max</option>
-        <option value="44">44 children max</option>
-        <option value="174">174 children max</option>
-      </select>
-      <select id="layer-repeat" style="visibility:hidden">
-        <option value="1">1 layer repeat</option>
-        <option value="4" selected>4 layer repeats</option>
-        <option value="16">16 layer repeats</option>
-      </select>
-    </section>
-    <div class="flex-auto" id="root" style="background: pink;"></div-->
+  <body class="h-100">
+    <div id="root" class="h-100"></div>
     <script src="./index.js" ></script>
   </body>
 </html>
