@@ -1,5 +1,6 @@
-/* global Ipfs, FileReader */
+/* eslint-env browser */
 
+import IPFS, { Buffer } from 'ipfs'
 import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import unixfs from 'ipfs-unixfs'
@@ -54,8 +55,7 @@ const graphOpts = {
   ]
 }
 
-const ipfs = new Ipfs()
-const { Buffer } = Ipfs
+const ipfs = new IPFS()
 
 const getAllNodes = async (nodeMap, cid) => {
   if (nodeMap.get(cid.toString())) return

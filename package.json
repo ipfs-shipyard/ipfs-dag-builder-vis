@@ -1,8 +1,8 @@
 {
-  "name": "ipfs-add-file-vis",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "ipfs-dag-builder-vis",
+  "version": "0.0.0",
+  "description": "Visualise your DAG layouts and chunk replication",
+  "main": "src/index.js",
   "dependencies": {
     "cytoscape": "^3.6.0",
     "cytoscape-dagre": "^2.2.2",
@@ -19,7 +19,19 @@
     "build": "parcel build src/index.html",
     "lint": "standard"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "DAG",
+    "Directed",
+    "Acyclic",
+    "Graph",
+    "Visualiser",
+    "Visualisation",
+    "IPFS",
+    "UnixFS"
+  ],
+  "author": "Alan Shaw and Oli Evans",
+  "license": "MIT",
+  "browserslist": [
+    "last 2 Chrome versions"
+  ]
 }
