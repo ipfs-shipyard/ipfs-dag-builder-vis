@@ -6,8 +6,6 @@ function kill (e) {
   return false
 }
 
-let nextId = 0
-
 export default function DropTarget ({ onFileDrop, children, ...props }) {
   const onDrop = e => {
     e.stopPropagation()
@@ -15,16 +13,13 @@ export default function DropTarget ({ onFileDrop, children, ...props }) {
     onFileDrop(e.dataTransfer.files[0])
   }
 
-  const id = `DropTarget${nextId++}`
-
   return (
     <div onDrop={onDrop} onDragEnter={kill} onDragOver={kill} {...props}>
       {children || (
         <div className='h-100 ph3 pb3'>
-          <label className='flex items-center justify-center h-100 br4 bw2 b--gray-muted b--dashed bg-snow-muted relative' for={id}>
+          <label className='flex items-center justify-center h-100 br4 bw2 b--gray-muted b--dashed bg-snow-muted relative'>
             <div>
               <input
-                id={id}
                 type='file'
                 className='absolute top-0 o-0'
                 onChange={e => onFileDrop(e.target.files[0])} />
