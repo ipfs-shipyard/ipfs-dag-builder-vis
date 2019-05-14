@@ -5,6 +5,7 @@ import Controls from './Controls'
 import Dag from './Dag'
 import { Buffer } from 'ipfs'
 import { ipfsAdd } from './lib/ipfs'
+import DropTarget from './DropTarget'
 
 export default function App () {
   const [files, setFiles] = useState([])
@@ -27,6 +28,15 @@ export default function App () {
     fileReader.readAsArrayBuffer(file)
   }
 
+  const onReset = () => {
+    setFiles([])
+    setChunker('size-512')
+    setStrategy('balanced')
+    setMaxChildren(11)
+    setLayerRepeat(4)
+    setRootCid(null)
+  }
+
   return (
     <div className='avenir flex flex-column h-100'>
       <div className='flex-none'>
@@ -34,7 +44,6 @@ export default function App () {
       </div>
       <div className='flex-none'>
         <Controls
-          onFileChange={onFileChange}
           chunker={chunker}
           onChunkerChange={setChunker}
           strategy={strategy}
@@ -42,10 +51,13 @@ export default function App () {
           maxChildren={maxChildren}
           onMaxChildrenChange={setMaxChildren}
           layerRepeat={layerRepeat}
-          onLayerRepeatChange={setLayerRepeat} />
+          onLayerRepeatChange={setLayerRepeat}
+          onReset={onReset} />
       </div>
       <div className='flex-auto'>
-        <Dag rootCid={rootCid} />
+        <DropTarget onFileDrop={onFileChange} className='h-100'>
+          {files.length ? <Dag rootCid={rootCid} /> : null}
+        </DropTarget>
       </div>
     </div>
   )

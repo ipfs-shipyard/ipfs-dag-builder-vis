@@ -76,6 +76,6 @@ export default class Dag extends Component {
   }
 
   render () {
-    return <div ref={this._graphRoot} style={{ background: 'pink' }} className='h-100' />
+    return <div ref={this._graphRoot} className='bg-snow-muted h-100' />
   }
 }
