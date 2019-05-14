@@ -15,8 +15,8 @@
     "standard": "^12.0.1"
   },
   "scripts": {
-    "start": "parcel src/index.html",
-    "build": "parcel build src/index.html",
+    "start": "parcel --public-url '.' src/index.html",
+    "build": "parcel build --public-url '.' src/index.html",
     "lint": "standard"
   },
   "keywords": [
