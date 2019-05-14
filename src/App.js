@@ -16,15 +16,13 @@ export default function App () {
 
   useEffect(() => {
     if (!files.length) return
-    ipfsAdd({ files, chunker, strategy, maxChildren, layerRepeat })
-      .then(cid => setRootCid(cid))
+    ipfsAdd({ files, chunker, strategy, maxChildren, layerRepeat }).then(setRootCid)
   }, [files, chunker, strategy, maxChildren, layerRepeat])
 
   const onFileChange = file => {
     const fileReader = new FileReader()
-    fileReader.onload = async e => {
-      const content = Buffer.from(e.target.result)
-      setFiles(files.concat({ path: file.name, content }))
+    fileReader.onload = e => {
+      setFiles(files.concat({ path: file.name, content: Buffer.from(e.target.result) }))
     }
     fileReader.readAsArrayBuffer(file)
   }
