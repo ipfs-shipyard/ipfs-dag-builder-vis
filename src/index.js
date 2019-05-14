@@ -4,6 +4,18 @@ import IPFS, { Buffer } from 'ipfs'
 import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import unixfs from 'ipfs-unixfs'
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
+
+class HelloMessage extends Component {
+  render () {
+    return <div>Hello {this.props.name}</div>
+  }
+}
+
+ReactDOM.render(<HelloMessage name='Jane' />, document.querySelector('main'))
+
+/*
 
 cytoscape.use(dagre)
 
@@ -182,3 +194,4 @@ ipfs.on('ready', () => {
     fileReader.readAsArrayBuffer(file)
   })
 })
+*/
