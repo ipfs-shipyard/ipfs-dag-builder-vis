@@ -9,9 +9,12 @@
     "ipfs": "^0.35.0",
     "ipfs-css": "^0.12.0",
     "parcel": "^1.12.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "tachyons": "^4.11.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
     "standard": "^12.0.1"
   },
   "scripts": {
@@ -33,5 +36,8 @@
   "license": "MIT",
   "browserslist": [
     "last 2 Chrome versions"
-  ]
+  ],
+  "standard": {
+    "parser": "babel-eslint"
+  }
 }
