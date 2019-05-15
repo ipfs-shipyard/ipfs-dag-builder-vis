@@ -2,6 +2,8 @@ import React, { Component, createRef } from 'react'
 import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import UnixFs from 'ipfs-unixfs'
+import { DAGNode } from 'ipld-dag-pb'
+import { Buffer } from 'ipfs'
 import { getIpfs } from './lib/ipfs'
 import DagGraphOptions from './DagGraphOptions'
 
@@ -17,8 +19,10 @@ export default class Dag extends Component {
     this._updateGraph()
   }
 
-  componentDidUpdate () {
-    this._updateGraph()
+  componentDidUpdate (prevProps) {
+    if (prevProps.rootCid !== this.props.rootCid) {
+      this._updateGraph()
+    }
   }
 
   async _updateGraph () {
@@ -35,8 +39,24 @@ export default class Dag extends Component {
     const container = this._graphRoot.current
     const elements = Array.from(nodeMap.values())
 
-    this._graph = cytoscape({ elements, container, ...DagGraphOptions })
-    this._graph.layout(DagGraphOptions.layout).run()
+    const cy = this._graph = cytoscape({ elements, container, ...DagGraphOptions })
+
+    const focusElement = element => {
+      cy.nodes('.focused').removeClass('focused')
+      element.addClass('focused')
+      this.props.onNodeFocus(element.data())
+    }
+
+    cy.on('tapdragover', e => {
+      if (!this.props.onNodeFocus || e.target.group() !== 'nodes') return
+      focusElement(e.target)
+    })
+
+    cy.layout(DagGraphOptions.layout).run()
+
+    if (this.props.onNodeFocus) {
+      focusElement(cy.getElementById(rootCid))
+    }
   }
 
   async _getGraphNodes (cid, nodeMap = new Map()) {
@@ -44,28 +64,46 @@ export default class Dag extends Component {
 
     const ipfs = await getIpfs()
     const { value: source } = await ipfs.dag.get(cid)
-
+    const classes = []
     let nodeData = {}
 
-    try {
-      // it's a unix system?
-      nodeData = UnixFs.unmarshal(source.data)
-    } catch (err) {
-      // dag-pb but not a unixfs.
-      console.log(err)
-    }
+    if (DAGNode.isDAGNode(source)) {
+      try {
+        // it's a unix system?
+        const unixfsData = UnixFs.unmarshal(source.data)
+        nodeData = {
+          type: 'unixfs',
+          isLeaf: Boolean(source.links.length),
+          length: (await ipfs.block.get(cid)).data.length,
+          unixfsData
+        }
+      } catch (err) {
+        // dag-pb but not a unixfs.
+        console.log(err)
+      }
 
-    for (let i = 0; i < source.links.length; i++) {
-      await this._getGraphNodes(source.links[i].cid.toString(), nodeMap)
+      for (let i = 0; i < source.links.length; i++) {
+        await this._getGraphNodes(source.links[i].cid.toString(), nodeMap)
+      }
+
+      if (!source.links.length) classes.push('leaf')
+      if (nodeData) classes.push('unixfs', nodeData.unixfsData.type)
+    } else if (Buffer.isBuffer(source)) {
+      classes.push('raw')
+      nodeData = { type: 'raw', isLeaf: true, length: source.length }
+    } else {
+      // TODO: What IPLD node is this? How to extract the links?
+      classes.push('leaf')
+      nodeData = { type: 'unknown', isLeaf: true }
     }
 
     nodeMap.set(cid, {
       group: 'nodes',
       data: { id: cid, ...nodeData },
-      classes: source.links.length ? [] : ['leaf']
+      classes
     })
 
-    source.links.forEach(link => {
+    ;(source.links || []).forEach(link => {
       nodeMap.set(cid + '->' + link.cid, {
         group: 'edges',
         data: { source: cid, target: link.cid.toString() }

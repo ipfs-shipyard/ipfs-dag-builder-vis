@@ -3,6 +3,8 @@ import React from 'react'
 export default function Controls ({
   chunker,
   onChunkerChange,
+  rawLeaves,
+  onRawLeavesChange,
   strategy,
   onStrategyChange,
   maxChildren,
@@ -23,6 +25,15 @@ export default function Controls ({
           <option value='size-1024'>1,024 byte chunks</option>
           <option value='size-16384'>16,384 byte chunks</option>
           <option value='size-262144'>26,2144 byte chunks</option>
+        </select>
+      </div>
+      <div className='mr3'>
+        <select
+          value={rawLeaves}
+          onChange={e => onRawLeavesChange(e.target.value === 'true')}
+          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'>
+          <option value='false'>UnixFS leaves</option>
+          <option value='true'>Raw leaves</option>
         </select>
       </div>
       <div className='mr3'>

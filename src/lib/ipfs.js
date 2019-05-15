@@ -13,7 +13,7 @@ export function getIpfs () {
   return ipfsReady
 }
 
-export async function ipfsAdd ({ files, chunker, strategy, maxChildren, layerRepeat }) {
+export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat }) {
   const ipfs = await getIpfs()
 
   console.log('adding', { files, chunker, strategy, maxChildren, layerRepeat })
@@ -23,6 +23,7 @@ export async function ipfsAdd ({ files, chunker, strategy, maxChildren, layerRep
 
   const res = await ipfs.add(files, {
     chunker,
+    rawLeaves,
     strategy,
     maxChildrenPerNode: maxChildren,
     layerRepeat,
