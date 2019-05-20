@@ -6,19 +6,23 @@ import Dag from './Dag'
 import { Buffer } from 'ipfs'
 import { ipfsAdd } from './lib/ipfs'
 import DropTarget from './DropTarget'
+import NodeInfo from './NodeInfo'
 
 export default function App () {
   const [files, setFiles] = useState([])
   const [chunker, setChunker] = useState('size-512')
+  const [rawLeaves, setRawLeaves] = useState(false)
   const [strategy, setStrategy] = useState('balanced')
   const [maxChildren, setMaxChildren] = useState(11)
   const [layerRepeat, setLayerRepeat] = useState(4)
   const [rootCid, setRootCid] = useState(null)
+  const [focusedNode, setFocusedNode] = useState(null)
 
   useEffect(() => {
     if (!files.length) return
-    ipfsAdd({ files, chunker, strategy, maxChildren, layerRepeat }).then(setRootCid)
-  }, [files, chunker, strategy, maxChildren, layerRepeat])
+    ipfsAdd({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat })
+      .then(setRootCid)
+  }, [files, chunker, rawLeaves, strategy, maxChildren, layerRepeat])
 
   const onFileChange = file => {
     const fileReader = new FileReader()
@@ -35,6 +39,7 @@ export default function App () {
     setMaxChildren(11)
     setLayerRepeat(4)
     setRootCid(null)
+    setFocusedNode(null)
   }
 
   return (
@@ -46,6 +51,8 @@ export default function App () {
         <Controls
           chunker={chunker}
           onChunkerChange={setChunker}
+          rawLeaves={rawLeaves}
+          onRawLeavesChange={setRawLeaves}
           strategy={strategy}
           onStrategyChange={setStrategy}
           maxChildren={maxChildren}
@@ -56,7 +63,16 @@ export default function App () {
       </div>
       <div className='flex-auto'>
         <DropTarget onFileDrop={onFileChange} className='h-100'>
-          {files.length ? <Dag rootCid={rootCid} /> : null}
+          {files.length ? (
+            <div className='flex flex-column h-100'>
+              <div className='flex-auto'>
+                <Dag rootCid={rootCid} onNodeFocus={setFocusedNode} />
+              </div>
+              <div className='flex-none'>
+                <NodeInfo info={focusedNode} />
+              </div>
+            </div>
+          ) : null}
         </DropTarget>
       </div>
     </div>
