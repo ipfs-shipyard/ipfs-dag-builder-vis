@@ -6,7 +6,7 @@
   "dependencies": {
     "cytoscape": "^3.6.0",
     "cytoscape-dagre": "^2.2.2",
-    "ipfs": "^0.35.0",
+    "ipfs": "^0.36.0-rc.0",
     "ipfs-css": "^0.12.0",
     "ipld-dag-pb": "^0.17.0",
     "parcel": "^1.12.3",
