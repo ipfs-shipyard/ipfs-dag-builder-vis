@@ -25,8 +25,10 @@ export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildre
     chunker,
     rawLeaves,
     strategy,
-    maxChildrenPerNode: maxChildren,
-    layerRepeat,
+    builderOptions: {
+      maxChildrenPerNode: maxChildren,
+      layerRepeat
+    },
     wrapWithDirectory: files.length > 1
   })
 

@@ -70,10 +70,10 @@ export default class Dag extends Component {
     if (DAGNode.isDAGNode(source)) {
       try {
         // it's a unix system?
-        const unixfsData = UnixFs.unmarshal(source.data)
+        const unixfsData = UnixFs.unmarshal(source.Data)
         nodeData = {
           type: 'unixfs',
-          isLeaf: Boolean(source.links.length),
+          isLeaf: Boolean(source.Links.length),
           length: (await ipfs.block.get(cid)).data.length,
           unixfsData
         }
@@ -82,11 +82,11 @@ export default class Dag extends Component {
         console.log(err)
       }
 
-      for (let i = 0; i < source.links.length; i++) {
-        await this._getGraphNodes(source.links[i].cid.toString(), nodeMap)
+      for (let i = 0; i < source.Links.length; i++) {
+        await this._getGraphNodes(source.Links[i].Hash.toString(), nodeMap)
       }
 
-      if (!source.links.length) classes.push('leaf')
+      if (!source.Links.length) classes.push('leaf')
       if (nodeData) classes.push('unixfs', nodeData.unixfsData.type)
     } else if (Buffer.isBuffer(source)) {
       classes.push('raw')
@@ -103,10 +103,10 @@ export default class Dag extends Component {
       classes
     })
 
-    ;(source.links || []).forEach(link => {
-      nodeMap.set(cid + '->' + link.cid, {
+    ;(source.Links || []).forEach(link => {
+      nodeMap.set(cid + '->' + link.Hash, {
         group: 'edges',
-        data: { source: cid, target: link.cid.toString() }
+        data: { source: cid, target: link.Hash.toString() }
       })
     })
 
