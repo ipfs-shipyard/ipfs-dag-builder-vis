@@ -1,5 +1,5 @@
 /* eslint-env browser */
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect } from 'react'
 import Header from './Header'
 import Controls from './Controls'
 import Dag from './Dag'
