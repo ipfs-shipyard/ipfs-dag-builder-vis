@@ -27,6 +27,7 @@ export default class Dag extends Component {
 
   async _updateGraph () {
     if (this._graph) this._graph.destroy()
+    if (this.props.onNodeFocus) this.props.onNodeFocus(null)
 
     const { rootCid } = this.props
     if (!rootCid) return
@@ -54,9 +55,8 @@ export default class Dag extends Component {
 
     cy.layout(DagGraphOptions.layout).run()
 
-    if (this.props.onNodeFocus) {
-      focusElement(cy.getElementById(rootCid))
-    }
+    if (this.props.onNodeFocus) focusElement(cy.getElementById(rootCid))
+    if (this.props.onGraphRender) this.props.onGraphRender()
   }
 
   async _getGraphNodes (cid, nodeMap = new Map()) {
