@@ -36,10 +36,9 @@ jobs:
 
             echo "Website added to IPFS: https://ipfs.io/ipfs/$hash"
 
-            # no domain yet.
-            # if [ "$CIRCLE_BRANCH" == "master" ] ; then
-            #   dnslink-dnsimple -d $DOMAIN -r _dnslink -l /ipfs/$hash
-            # fi
+            if [ "$CIRCLE_BRANCH" == "master" ] ; then
+              dnslink-dnsimple -d $DOMAIN -r _dnslink -l /ipfs/$hash
+            fi
 
 workflows:
   version: 2
