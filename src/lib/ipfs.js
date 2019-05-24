@@ -18,9 +18,6 @@ export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildre
 
   console.log('adding', { files, chunker, strategy, maxChildren, layerRepeat })
 
-  // ...because IPFS mutates the array and it's contents
-  files = files.map(({ path, content }) => ({ path, content }))
-
   const res = await ipfs.add(files, {
     chunker,
     rawLeaves,

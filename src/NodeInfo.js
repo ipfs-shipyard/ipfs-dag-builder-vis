@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 
 const NodeContainer = ({ children }) => (
-  <div className='pa3' style={{ minHeight: 60 }}>{children}</div>
+  <div className='pa3' style={{ minHeight: 90 }}>{children}</div>
 )
 
 const CidColumn = ({ cid }) => (

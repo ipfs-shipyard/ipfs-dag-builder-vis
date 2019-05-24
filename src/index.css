@@ -1,2 +1,27 @@
 @import tachyons;
 @import ipfs-css;
+
+@keyframes lolo {
+  0%, 100% {
+    transform: translateX(30px) scaleX(0.14);
+  }
+  25%, 75% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: translateX(-30px) scaleX(0.14);
+  }
+}
+.lolo {
+  display: inline-block;
+  width: 70px;
+  height: 6px;
+}
+.lolo::after {
+  content:'';
+  display:block;
+  background: #0b3a53;
+  width: 70px;
+  height: 100%;
+  animation: lolo 1.5s cubic-bezier(0.25,0.1,0.25,1) infinite;
+}

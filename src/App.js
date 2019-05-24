@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react'
 import Header from './Header'
 import Controls from './Controls'
 import Dag from './Dag'
-import { Buffer } from 'ipfs'
 import { ipfsAdd } from './lib/ipfs'
 import DropTarget from './DropTarget'
 import NodeInfo from './NodeInfo'
+import Spinner from './Spinner'
 
 export default function App () {
   const [files, setFiles] = useState([])
@@ -17,19 +17,21 @@ export default function App () {
   const [layerRepeat, setLayerRepeat] = useState(4)
   const [rootCid, setRootCid] = useState(null)
   const [focusedNode, setFocusedNode] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!files.length) return
-    ipfsAdd({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat })
-      .then(setRootCid)
+    const addFiles = async () => {
+      setRootCid(null)
+      setLoading(true)
+      const cid = await ipfsAdd({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat })
+      setRootCid(cid)
+    }
+    addFiles()
   }, [files, chunker, rawLeaves, strategy, maxChildren, layerRepeat])
 
   const onFileChange = file => {
-    const fileReader = new FileReader()
-    fileReader.onload = e => {
-      setFiles(files.concat({ path: file.name, content: Buffer.from(e.target.result) }))
-    }
-    fileReader.readAsArrayBuffer(file)
+    setFiles(files.concat({ path: file.name, content: file }))
   }
 
   const onReset = () => {
@@ -65,8 +67,12 @@ export default function App () {
         <DropTarget onFileDrop={onFileChange} className='h-100'>
           {files.length ? (
             <div className='flex flex-column h-100'>
-              <div className='flex-auto'>
-                <Dag rootCid={rootCid} onNodeFocus={setFocusedNode} />
+              <div className='flex-auto relative'>
+                <Spinner show={loading} />
+                <Dag
+                  rootCid={rootCid}
+                  onNodeFocus={setFocusedNode}
+                  onGraphRender={() => setLoading(false)} />
               </div>
               <div className='flex-none'>
                 <NodeInfo info={focusedNode} />
