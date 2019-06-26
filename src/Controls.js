@@ -19,19 +19,22 @@ export default function Controls ({
         <select
           value={chunker}
           onChange={e => onChunkerChange(e.target.value)}
-          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'>
-          <option value='size-32'>32 byte chunks</option>
-          <option value='size-512'>512 byte chunks</option>
-          <option value='size-1024'>1,024 byte chunks</option>
-          <option value='size-16384'>16,384 byte chunks</option>
-          <option value='size-262144'>26,2144 byte chunks</option>
+          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'
+          title='Chunking algorithm to use'>
+          <option value='size-32'>Fixed 32 byte chunks</option>
+          <option value='size-512'>Fixed 512 byte chunks</option>
+          <option value='size-1024'>Fixed 1,024 byte chunks</option>
+          <option value='size-16384'>Fixed 16,384 byte chunks</option>
+          <option value='size-262144'>Fixed 26,2144 byte chunks</option>
+          <option value='rabin'>Rabin</option>
         </select>
       </div>
       <div className='mr3'>
         <select
           value={rawLeaves}
           onChange={e => onRawLeavesChange(e.target.value === 'true')}
-          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'>
+          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'
+          title='Wrapper for leaf nodes - UnixFS or none (raw)'>
           <option value='false'>UnixFS leaves</option>
           <option value='true'>Raw leaves</option>
         </select>
@@ -40,7 +43,8 @@ export default function Controls ({
         <select
           value={strategy}
           onChange={e => onStrategyChange(e.target.value)}
-          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'>
+          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'
+          title='Layout of the DAG that is built'>
           <option value='balanced'>Balanced DAG</option>
           <option value='trickle'>Trickle DAG</option>
           <option value='flat'>Flat DAG</option>
@@ -51,7 +55,8 @@ export default function Controls ({
           <select
             value={maxChildren}
             onChange={e => onMaxChildrenChange(parseInt(e.target.value))}
-            className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'>
+            className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'
+            title='Maximum number of nodes any node can link to'>
             <option value='11'>11 children max</option>
             <option value='44'>44 children max</option>
             <option value='174'>174 children max</option>
@@ -63,7 +68,8 @@ export default function Controls ({
           <select
             value={layerRepeat}
             onChange={e => onLayerRepeatChange(parseInt(e.target.value))}
-            className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'>
+            className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'
+            title='Maximum repetition of parent nodes for each layer of the tree'>
             <option value='1'>1 layer repeat</option>
             <option value='4'>4 layer repeats</option>
             <option value='16'>16 layer repeats</option>
