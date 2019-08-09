@@ -1,16 +1,23 @@
-import IPFS from 'ipfs'
+import ipfsProvider from 'ipfs-provider'
 
-let ipfs, ipfsReady
+let ipfs, provider
 
-export function getIpfs () {
-  if (ipfsReady) return ipfsReady
+export async function getIpfs () {
+  if (ipfs) return ipfs
 
-  ipfsReady = new Promise((resolve, reject) => {
-    ipfs = new IPFS()
-    ipfs.on('ready', () => resolve(ipfs)).on('error', reject)
+  const res = await ipfsProvider({
+    tryWebExt: true,
+    tryWindow: true,
+    tryApi: true,
+    tryJsIpfs: true,
+    getJsIpfs: () => import('ipfs')
   })
 
-  return ipfsReady
+  ipfs = res.ipfs
+  provider = res.provider
+
+  console.log('connected to ipfs through ', provider)
+  return ipfs
 }
 
 export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat }) {
