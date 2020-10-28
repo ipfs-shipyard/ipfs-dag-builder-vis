@@ -61,24 +61,28 @@ export default function App () {
           onMaxChildrenChange={setMaxChildren}
           layerRepeat={layerRepeat}
           onLayerRepeatChange={setLayerRepeat}
-          onReset={onReset} />
+          onReset={onReset}
+        />
       </div>
       <div className='flex-auto'>
         <DropTarget onFileDrop={onFileChange} className='h-100'>
-          {files.length ? (
-            <div className='flex flex-column h-100'>
-              <div className='flex-auto relative'>
-                <Spinner show={loading} />
-                <Dag
-                  rootCid={rootCid}
-                  onNodeFocus={setFocusedNode}
-                  onGraphRender={() => setLoading(false)} />
+          {files.length
+            ? (
+              <div className='flex flex-column h-100'>
+                <div className='flex-auto relative'>
+                  <Spinner show={loading} />
+                  <Dag
+                    rootCid={rootCid}
+                    onNodeFocus={setFocusedNode}
+                    onGraphRender={() => setLoading(false)}
+                  />
+                </div>
+                <div className='flex-none'>
+                  <NodeInfo info={focusedNode} />
+                </div>
               </div>
-              <div className='flex-none'>
-                <NodeInfo info={focusedNode} />
-              </div>
-            </div>
-          ) : null}
+              )
+            : null}
         </DropTarget>
       </div>
     </div>
