@@ -1,11 +1,11 @@
-import IPFS from 'ipfs'
+/* eslint-env browser */
 
-let ipfs
+import IPFS from 'ipfs'
 
 const streamFiles = async (ipfs, files, options) => {
   // Create a stream to write files to
   const stream = new ReadableStream({
-    start(controller) {
+    start (controller) {
       for (let i = 0; i < files.length; i++) {
         // Add the files one by one
         controller.enqueue(files[i])
@@ -19,11 +19,12 @@ const streamFiles = async (ipfs, files, options) => {
   return await ipfs.add(stream, options)
 }
 
+let ipfsPromise
 export function getIpfs () {
-  if (ipfs) return ipfs
+  if (ipfsPromise) return ipfsPromise
 
   // Create an offline by default node
-  ipfs = IPFS.create({
+  ipfsPromise = IPFS.create({
     preload: {
       enabled: false
     },
@@ -34,7 +35,7 @@ export function getIpfs () {
       }
     }
   })
-  return ipfs
+  return ipfsPromise
 }
 
 export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat }) {
