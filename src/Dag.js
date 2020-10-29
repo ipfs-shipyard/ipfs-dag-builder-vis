@@ -3,7 +3,6 @@ import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import UnixFs from 'ipfs-unixfs'
 import { DAGNode } from 'ipld-dag-pb'
-import { Buffer } from 'ipfs'
 import { getIpfs } from './lib/ipfs'
 import DagGraphOptions from './DagGraphOptions'
 
@@ -88,7 +87,7 @@ export default class Dag extends Component {
 
       if (!source.Links.length) classes.push('leaf')
       if (nodeData) classes.push('unixfs', nodeData.unixfsData.type)
-    } else if (Buffer.isBuffer(source)) {
+    } else if (source instanceof Uint8Array) {
       classes.push('raw')
       nodeData = { type: 'raw', isLeaf: true, length: source.length }
     } else {

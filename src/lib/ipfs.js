@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-import IPFS from 'ipfs'
+import IPFS from 'ipfs-core'
 
 const streamFiles = async (ipfs, files, options) => {
   // Create a stream to write files to
