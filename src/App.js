@@ -10,7 +10,7 @@ import Spinner from './Spinner'
 
 export default function App () {
   const [files, setFiles] = useState([])
-  const [chunker, setChunker] = useState('size-262144')
+  const [chunker, setChunker] = useState('size-512')
   const [rawLeaves, setRawLeaves] = useState(false)
   const [strategy, setStrategy] = useState('balanced')
   const [maxChildren, setMaxChildren] = useState(11)
@@ -36,7 +36,7 @@ export default function App () {
 
   const onReset = () => {
     setFiles([])
-    setChunker('size-262144')
+    setChunker('size-512')
     setStrategy('balanced')
     setMaxChildren(11)
     setLayerRepeat(4)
