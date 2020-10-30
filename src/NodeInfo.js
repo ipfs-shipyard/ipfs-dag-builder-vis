@@ -5,16 +5,17 @@ const NodeContainer = ({ children }) => (
 )
 
 const CidColumn = ({ cid }) => (
-  <Fragment>
+  <>
     <span className='f6 charcoal-muted'>CID</span><br />
     <a
       className='code charcoal hover-blue no-underline'
       href={`https://cid.ipfs.io/#${cid}`}
       target={cid}
-      title='Inspect this CID'>
+      title='Inspect this CID'
+    >
       {cid}
     </a><br />&nbsp;
-  </Fragment>
+  </>
 )
 
 const UnixFsFileNode = ({ info }) => {
@@ -36,7 +37,7 @@ const UnixFsFileNode = ({ info }) => {
           </span>
         </div>
         <div className='mr4 flex-auto'>
-          <span title={`Bytes of data in this node (excluding UnixFS wrapper)`}>
+          <span title='Bytes of data in this node (excluding UnixFS wrapper)'>
             {info.unixfsData.data ? info.unixfsData.data.length : 0} <span className='charcoal-muted'>bytes data</span>
           </span>
         </div>
@@ -67,7 +68,7 @@ const UnixFsFileLeafNode = ({ info }) => {
           </span>
         </div>
         <div className='mr4 flex-auto'>
-          <span title={`Bytes of data in this node (excluding UnixFS wrapper)`}>
+          <span title='Bytes of data in this node (excluding UnixFS wrapper)'>
             {info.unixfsData.data ? info.unixfsData.data.length : 0} <span className='charcoal-muted'>bytes data</span>
           </span>
         </div>
@@ -98,7 +99,7 @@ const UnixFsDirNode = ({ info }) => {
           </span>
         </div>
         <div className='mr4 flex-auto'>
-          <span title={`Bytes of data in this node (excluding UnixFS wrapper)`}>
+          <span title='Bytes of data in this node (excluding UnixFS wrapper)'>
             {info.unixfsData.data ? info.unixfsData.data.length : 0} <span className='charcoal-muted'>bytes data</span>
           </span>
         </div>
@@ -126,7 +127,7 @@ const UnixFsHamtDirNode = ({ info }) => {
           </span>
         </div>
         <div className='mr4 flex-auto'>
-          <span title={`Bytes of data in this node (excluding UnixFS wrapper)`}>
+          <span title='Bytes of data in this node (excluding UnixFS wrapper)'>
             {info.unixfsData.data ? info.unixfsData.data.length : 0} <span className='charcoal-muted'>bytes data</span>
           </span>
         </div>
@@ -154,7 +155,7 @@ const UnixFsRawNode = ({ info }) => {
           </span>
         </div>
         <div className='mr4 flex-auto'>
-          <span title={`Bytes of data in this node (excluding UnixFS wrapper)`}>
+          <span title='Bytes of data in this node (excluding UnixFS wrapper)'>
             {info.unixfsData.data ? info.unixfsData.data.length : 0} <span className='charcoal-muted'>bytes data</span>
           </span>
         </div>
@@ -182,7 +183,7 @@ const UnixFsOtherNode = ({ info }) => {
           </span>
         </div>
         <div className='mr4 flex-auto'>
-          <span title={`Bytes of data in this node (excluding UnixFS wrapper)`}>
+          <span title='Bytes of data in this node (excluding UnixFS wrapper)'>
             {info.unixfsData.data ? info.unixfsData.data.length : 0} <span className='charcoal-muted'>bytes data</span>
           </span>
         </div>
@@ -213,7 +214,7 @@ const RawNode = ({ info }) => {
           </span>
         </div>
         <div className='mr4 flex-auto'>
-          <span title={`Bytes of data in this node`}>
+          <span title='Bytes of data in this node'>
             {info.length} <span className='charcoal-muted'>bytes data</span>
           </span>
         </div>

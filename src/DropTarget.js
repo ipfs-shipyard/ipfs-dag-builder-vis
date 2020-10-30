@@ -22,9 +22,11 @@ export default function DropTarget ({ onFileDrop, children, ...props }) {
               <input
                 type='file'
                 className='absolute top-0 o-0'
-                onChange={e => onFileDrop(e.target.files[0])} />
+                onChange={e => onFileDrop(e.target.files[0])}
+              />
               <span
-                className='f3 transition-all sans-serif dib v-mid lh-copy bn br1 ph4 pv2 pointer focus-outline bg-aqua o-90 glow white mr3'>
+                className='f3 transition-all sans-serif dib v-mid lh-copy bn br1 ph4 pv2 pointer focus-outline bg-aqua o-90 glow white mr3'
+              >
                 Pick a file
               </span>
               <span className='f2 gray v-mid'>or drop it here</span>

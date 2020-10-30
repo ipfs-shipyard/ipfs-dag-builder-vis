@@ -1,16 +1,41 @@
-import IPFS from 'ipfs'
+/* eslint-env browser */
 
-let ipfs, ipfsReady
+import IPFS from 'ipfs-core'
 
-export function getIpfs () {
-  if (ipfsReady) return ipfsReady
+const streamFiles = async (ipfs, files, options) => {
+  // Create a stream to write files to
+  const stream = new ReadableStream({
+    start (controller) {
+      for (let i = 0; i < files.length; i++) {
+        // Add the files one by one
+        controller.enqueue(files[i])
+      }
 
-  ipfsReady = new Promise((resolve, reject) => {
-    ipfs = new IPFS()
-    ipfs.on('ready', () => resolve(ipfs)).on('error', reject)
+      // When we have no more files to add, close the stream
+      controller.close()
+    }
   })
 
-  return ipfsReady
+  return await ipfs.add(stream, options)
+}
+
+let ipfsPromise
+export function getIpfs () {
+  if (ipfsPromise) return ipfsPromise
+
+  // Create an offline by default node
+  ipfsPromise = IPFS.create({
+    preload: {
+      enabled: false
+    },
+    config: {
+      Bootstrap: [],
+      Addresses: {
+        Delegates: []
+      }
+    }
+  })
+  return ipfsPromise
 }
 
 export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat }) {
@@ -18,7 +43,7 @@ export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildre
 
   console.log('adding', { files, chunker, strategy, maxChildren, layerRepeat })
 
-  const res = await ipfs.add(files, {
+  const res = await streamFiles(ipfs, files, {
     chunker,
     rawLeaves,
     strategy,
@@ -29,6 +54,6 @@ export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildre
     wrapWithDirectory: files.length > 1
   })
 
-  console.log('added', res[res.length - 1].hash)
-  return res[res.length - 1].hash
+  console.log('added', res.cid.toString())
+  return res.cid.toString()
 }
