@@ -16,11 +16,13 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
+    "rimraf": "^3.0.2",
     "standard": "^15.0.1"
   },
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build --public-url '.' src/index.html",
+    "postbuild": "rimraf dist/**/*.map",
     "lint": "standard"
   },
   "keywords": [
