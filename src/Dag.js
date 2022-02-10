@@ -1,8 +1,8 @@
 import React, { Component, createRef } from 'react'
 import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
-import UnixFs from 'ipfs-unixfs'
-import { DAGNode } from 'ipld-dag-pb'
+import { UnixFS } from 'ipfs-unixfs'
+import { validate } from '@ipld/dag-pb'
 import { getIpfs } from './lib/ipfs'
 import DagGraphOptions from './DagGraphOptions'
 
@@ -19,7 +19,7 @@ export default class Dag extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.rootCid !== this.props.rootCid) {
+    if (String(prevProps.rootCid) !== String(this.props.rootCid)) {
       this._updateGraph()
     }
   }
@@ -34,7 +34,7 @@ export default class Dag extends Component {
     const nodeMap = await this._getGraphNodes(rootCid)
 
     // ...could have taken a while, did we get a new root node?
-    if (rootCid !== this.props.rootCid) return
+    if (String(rootCid) !== String(this.props.rootCid)) return
 
     const container = this._graphRoot.current
     const elements = Array.from(nodeMap.values())
@@ -59,21 +59,21 @@ export default class Dag extends Component {
   }
 
   async _getGraphNodes (cid, nodeMap = new Map()) {
-    if (nodeMap.get(cid)) return
+    if (nodeMap.get(cid.toString())) return
 
     const ipfs = await getIpfs()
     const { value: source } = await ipfs.dag.get(cid)
     const classes = []
     let nodeData = {}
 
-    if (DAGNode.isDAGNode(source)) {
+    if (isDagPb(source)) {
       try {
         // it's a unix system?
-        const unixfsData = UnixFs.unmarshal(source.Data)
+        const unixfsData = UnixFS.unmarshal(source.Data)
         nodeData = {
           type: 'unixfs',
           isLeaf: Boolean(source.Links.length),
-          length: (await ipfs.block.get(cid)).data.length,
+          length: (await ipfs.block.get(cid)).byteLength,
           unixfsData
         }
       } catch (err) {
@@ -82,7 +82,7 @@ export default class Dag extends Component {
       }
 
       for (let i = 0; i < source.Links.length; i++) {
-        await this._getGraphNodes(source.Links[i].Hash.toString(), nodeMap)
+        await this._getGraphNodes(source.Links[i].Hash, nodeMap)
       }
 
       if (!source.Links.length) classes.push('leaf')
@@ -96,16 +96,16 @@ export default class Dag extends Component {
       nodeData = { type: 'unknown', isLeaf: true }
     }
 
-    nodeMap.set(cid, {
+    nodeMap.set(cid.toString(), {
       group: 'nodes',
-      data: { id: cid, ...nodeData },
+      data: { id: cid.toString(), ...nodeData },
       classes
     })
 
     ;(source.Links || []).forEach(link => {
-      nodeMap.set(cid + '->' + link.Hash, {
+      nodeMap.set(`${cid}->${link.Hash}`, {
         group: 'edges',
-        data: { source: cid, target: link.Hash.toString() }
+        data: { source: cid.toString(), target: link.Hash.toString() }
       })
     })
 
@@ -114,5 +114,14 @@ export default class Dag extends Component {
 
   render () {
     return <div ref={this._graphRoot} className='bg-snow-muted h-100' />
+  }
+}
+
+function isDagPb (node) {
+  try {
+    validate(node)
+    return true
+  } catch {
+    return false
   }
 }

@@ -1,7 +1,12 @@
 /* eslint-env browser */
 
-import IPFS from 'ipfs-core'
+import { create } from 'ipfs-core'
 
+/**
+ * @param {import('ipfs-core').IPFS} ipfs
+ * @param {Array<File>} files
+ * @param {import('ipfs-unixfs-importer').UserImporterOptions} options
+ */
 const streamFiles = async (ipfs, files, options) => {
   // Create a stream to write files to
   const stream = new ReadableStream({
@@ -16,15 +21,20 @@ const streamFiles = async (ipfs, files, options) => {
     }
   })
 
-  return await ipfs.add(stream, options)
+  let last
+  for await (const res of ipfs.addAll(stream, options)) {
+    last = res
+  }
+  return last
 }
 
+/** @type {Promise<import('ipfs-core').IPFS>} */
 let ipfsPromise
 export function getIpfs () {
   if (ipfsPromise) return ipfsPromise
 
   // Create an offline by default node
-  ipfsPromise = IPFS.create({
+  ipfsPromise = create({
     preload: {
       enabled: false
     },
@@ -38,22 +48,21 @@ export function getIpfs () {
   return ipfsPromise
 }
 
-export async function ipfsAdd ({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat }) {
+export async function ipfsAdd ({ files, cidVersion, chunker, rawLeaves, strategy, maxChildren, layerRepeat }) {
   const ipfs = await getIpfs()
 
-  console.log('adding', { files, chunker, strategy, maxChildren, layerRepeat })
+  console.log('adding', { cidVersion, files, chunker, strategy, maxChildren, layerRepeat })
 
   const res = await streamFiles(ipfs, files, {
+    cidVersion,
     chunker,
     rawLeaves,
     strategy,
-    builderOptions: {
-      maxChildrenPerNode: maxChildren,
-      layerRepeat
-    },
+    maxChildrenPerNode: maxChildren,
+    layerRepeat,
     wrapWithDirectory: files.length > 1
   })
 
   console.log('added', res.cid.toString())
-  return res.cid.toString()
+  return res.cid
 }

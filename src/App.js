@@ -10,6 +10,7 @@ import Spinner from './Spinner'
 
 export default function App () {
   const [files, setFiles] = useState([])
+  const [cidVersion, setCidVersion] = useState(0)
   const [chunker, setChunker] = useState('size-512')
   const [rawLeaves, setRawLeaves] = useState(false)
   const [strategy, setStrategy] = useState('balanced')
@@ -24,17 +25,18 @@ export default function App () {
     const addFiles = async () => {
       setRootCid(null)
       setLoading(true)
-      const cid = await ipfsAdd({ files, chunker, rawLeaves, strategy, maxChildren, layerRepeat })
+      const cid = await ipfsAdd({ cidVersion, files, chunker, rawLeaves, strategy, maxChildren, layerRepeat })
       setRootCid(cid)
     }
     addFiles()
-  }, [files, chunker, rawLeaves, strategy, maxChildren, layerRepeat])
+  }, [files, cidVersion, chunker, rawLeaves, strategy, maxChildren, layerRepeat])
 
   const onFileChange = file => {
     setFiles(files.concat({ path: file.name, content: file }))
   }
 
   const onReset = () => {
+    setCidVersion(0)
     setFiles([])
     setChunker('size-512')
     setStrategy('balanced')
@@ -51,6 +53,8 @@ export default function App () {
       </div>
       <div className='flex-none'>
         <Controls
+          cidVersion={cidVersion}
+          onCidVersionChange={setCidVersion}
           chunker={chunker}
           onChunkerChange={setChunker}
           rawLeaves={rawLeaves}

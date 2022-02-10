@@ -1,6 +1,8 @@
 import React from 'react'
 
 export default function Controls ({
+  cidVersion,
+  onCidVersionChange,
   chunker,
   onChunkerChange,
   rawLeaves,
@@ -17,6 +19,17 @@ export default function Controls ({
     <div className='flex flex-row items-center pa3 bg-white'>
       <div className='mr3'>
         <select
+          value={cidVersion}
+          onChange={e => onCidVersionChange(parseInt(e.target.value))}
+          className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'
+          title='CID version - 0 or 1 (0)'
+        >
+          <option value='0'>CID v0</option>
+          <option value='1'>CID v1</option>
+        </select>
+      </div>
+      <div className='mr3'>
+        <select
           value={chunker}
           onChange={e => onChunkerChange(e.target.value)}
           className='charcoal ba b--black-20 br1 pv1 ph2 db center focus-outline'
@@ -26,7 +39,7 @@ export default function Controls ({
           <option value='size-512'>Fixed 512 byte chunks</option>
           <option value='size-1024'>Fixed 1,024 byte chunks</option>
           <option value='size-16384'>Fixed 16,384 byte chunks</option>
-          <option value='size-262144'>Fixed 26,2144 byte chunks</option>
+          <option value='size-262144'>Fixed 262,144 byte chunks</option>
           <option value='rabin'>Rabin</option>
         </select>
       </div>
