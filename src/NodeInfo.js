@@ -9,7 +9,7 @@ const CidColumn = ({ cid }) => (
     <span className='f6 charcoal-muted'>CID</span><br />
     <a
       className='code charcoal hover-blue no-underline'
-      href={`https://cid.ipfs.io/#${cid}`}
+      href={`https://cid.ipfs.tech/#${cid}`}
       target={cid}
       title='Inspect this CID'
     >
