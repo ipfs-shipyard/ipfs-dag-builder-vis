@@ -19,5 +19,4 @@ window.telemetry = telemetry
 window.removeMetricsConsent = () => telemetry.removeConsent(['minimal'])
 window.addMetricsConsent = () => telemetry.addConsent(['minimal'])
 
-
 ReactDOM.render(<App />, document.getElementById('root'))
