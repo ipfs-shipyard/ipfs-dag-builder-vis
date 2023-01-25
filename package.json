@@ -4,7 +4,7 @@
   "description": "Visualise your DAG layouts and chunk replication",
   "main": "src/index.js",
   "dependencies": {
-    "@ipfs-shipyard/ignite-metrics": "^1.2.1",
+    "@ipfs-shipyard/ignite-metrics": "^1.2.2",
     "@ipld/dag-pb": "^2.1.15",
     "cytoscape": "^3.16.0",
     "cytoscape-dagre": "^2.3.0",
