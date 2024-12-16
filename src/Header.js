@@ -8,7 +8,7 @@ export default function Header () {
         <img src={Logo} style={{ height: 50 }} />
       </a>
       <h1 className='w-50 ma0 tr f3 fw2 montserrat aqua'>
-        <a href="https://github.com/ipfs-shipyard/ipfs-dag-builder-vis" title='source'>DAG builder</a>
+        <a href='https://github.com/ipfs-shipyard/ipfs-dag-builder-vis'>DAG builder</a>
       </h1>
     </header>
   )
