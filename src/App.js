@@ -10,11 +10,11 @@ import Spinner from './Spinner'
 
 export default function App () {
   const [files, setFiles] = useState([])
-  const [cidVersion, setCidVersion] = useState(0)
-  const [chunker, setChunker] = useState('size-512')
-  const [rawLeaves, setRawLeaves] = useState(false)
+  const [cidVersion, setCidVersion] = useState(1)
+  const [chunker, setChunker] = useState('size-1048576')
+  const [rawLeaves, setRawLeaves] = useState(true)
   const [strategy, setStrategy] = useState('balanced')
-  const [maxChildren, setMaxChildren] = useState(11)
+  const [maxChildren, setMaxChildren] = useState(174)
   const [layerRepeat, setLayerRepeat] = useState(4)
   const [rootCid, setRootCid] = useState(null)
   const [focusedNode, setFocusedNode] = useState(null)
@@ -36,11 +36,11 @@ export default function App () {
   }
 
   const onReset = () => {
-    setCidVersion(0)
+    setCidVersion(1)
     setFiles([])
-    setChunker('size-512')
+    setChunker('size-1048576')
     setStrategy('balanced')
-    setMaxChildren(11)
+    setMaxChildren(174)
     setLayerRepeat(4)
     setRootCid(null)
     setFocusedNode(null)
