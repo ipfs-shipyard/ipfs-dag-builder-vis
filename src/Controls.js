@@ -40,6 +40,7 @@ export default function Controls ({
           <option value='size-1024'>Fixed 1,024 byte chunks</option>
           <option value='size-16384'>Fixed 16,384 byte chunks</option>
           <option value='size-262144'>Fixed 262,144 byte chunks</option>
+          <option value='size-1048576'>Fixed 1,048,576 byte chunks</option>
           <option value='rabin'>Rabin</option>
         </select>
       </div>
