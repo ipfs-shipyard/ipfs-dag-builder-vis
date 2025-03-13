@@ -79,6 +79,7 @@ export default function Controls ({
               <option value='11'>11 children max</option>
               <option value='44'>44 children max</option>
               <option value='174'>174 children max</option>
+              <option value='1024'>1024 children max</option>
             </select>
           </div>
           )

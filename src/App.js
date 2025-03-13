@@ -14,7 +14,7 @@ export default function App () {
   const [chunker, setChunker] = useState('size-1048576')
   const [rawLeaves, setRawLeaves] = useState(true)
   const [strategy, setStrategy] = useState('balanced')
-  const [maxChildren, setMaxChildren] = useState(174)
+  const [maxChildren, setMaxChildren] = useState(1024)
   const [layerRepeat, setLayerRepeat] = useState(4)
   const [rootCid, setRootCid] = useState(null)
   const [focusedNode, setFocusedNode] = useState(null)
